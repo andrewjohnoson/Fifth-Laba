@@ -6,10 +6,9 @@ int main()
     int n;
     while (1) {
         bool isDigit = true;
-        int dotCounter = 0;
         getline(std::cin, input);
         for (char c : input) {
-            if (dotCounter >= 2 || !std::isdigit(c)) {
+            if (!std::isdigit(c)) {
                 isDigit = false;
                 break;
             }
