@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include <cctype>
+#include <stdexcept>
 
 int main()
 {
