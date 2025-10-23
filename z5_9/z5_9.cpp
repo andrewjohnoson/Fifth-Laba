@@ -1,61 +1,92 @@
 #include <iostream>
-#include <string>
 #include <cctype>
-#include <stdexcept>
+#include <ctime>
+#include <cstdlib>
 
 int main()
 {
-    std::string input;
-    int n;
-    while (1) {
-        bool isDigit = true;
-        getline(std::cin, input);
-        for (char c : input) {
-            if (!std::isdigit(c)) {
-                isDigit = false;
-                break;
-            }
-        }
+    setlocale(LC_ALL, "rus");
 
-        if (!isDigit) {
-            std::cout << "Некорректный ввод.\n";
-            continue;
-        } else {
-            try {
-                int n = std::stoi(input);
-            } catch (const std::out_of_range&) {
-                std::cout << "Число не входит в диапазон.\n";
-            }
-        }
+    std::cout << "Введите размер квадратной матрицы (натуральное число):\n";
+    int n;
+    
+    while (!(std::cin >> n) || std::cin.peek() != '\n' || n <= 0) {
+        std::cout << "Некорректный ввод данных.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
+    srand(time(0));
     int a[n][n];
-
+    /*
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             std::cin >> a[i][j];
         }
-    }
+    } */
 
-    int proizv[n];
     for (int i = 0; i < n; i++) {
-        proizv[i] = 1;
         for (int j = 0; j < n; j++) {
-            a[i][j] < 0 ? proizv[i] = -1 : proizv[i] *= a[i][j];
+            a[i][j] = rand() % 40 - 10;
         }
     }
 
-    int amax1 = -999999999, amax2 = -999999999;
+    
+    std::cout << "Ваш массив: \n";
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            std::cout << a[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+
+   long proizv[n];
+   for (int i = 0; i < n; i++) {
+       proizv[i] = 1;
+       for (int j = 0; j < n; j++) {
+            if (a[i][j] < 0) {
+                proizv[i] = -1;
+                break;
+            } else {
+                proizv[i] *= a[i][j];
+            }
+           
+        }
+    }
+
+    std::cout << "Произведение элементов в строках, где нету отрицательного элемента:\n";
+    int negative = 0;
+    for (int i = 0; i < n; i++) {
+        if (proizv[i] >= 0) {
+            std::cout << proizv[i] << " ";
+        } else {
+            negative++;
+        }
+    }
+
+    if (negative == n) {
+        std::cout << "Во всех строках есть отрицательные числа.\n";
+    }
+    std::cout << "\n";
+
+    int amax1 = a[0][0], amax2 = a[n - 1][n - 1], dmax = 0;
     int sum1 = 0, sum2 = 0;
     for (int i = 1; i < n; i++) {
         for (int j = 0; j < n - i; j++) {
             sum1 += a[i + j][j];
             sum2 += a[j][j + i];
             
-            std::cout << a[i + j][j] << " " << a[j][j + i] << " ";
+            //std::cout << a[i + j][j] << " " << a[j][j + i] << " ";
         }
-        std::cout << "\n";
+        int temp = std::max(sum1, sum2);
+        if (temp > dmax) {
+            dmax = temp;
+        }
+        //std::cout << "\n";
     }
+
+    std::cout << "Максимум среди сумм элементов диагоналей параллельных главной: " << dmax;
 
     return 0;
 }
